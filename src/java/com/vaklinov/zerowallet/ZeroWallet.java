@@ -317,7 +317,7 @@ public class ZeroWallet
                     ZeroWallet.this.getRootPane().getParent(),
                     "The ZeroClassic GUI Wallet is currently considered experimental. Use of this software\n" +
                     "comes at your own risk! Be sure to read the list of known issues and limitations\n" +
-                    "at this page: https://github.com/vaklinov/zero-swing-wallet-ui\n\n" +
+                    "at this page: https://github.com/LEAD-Anoy74/SwingWallet\n\n" +
                     "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" +
                     "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" +
                     "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" +
