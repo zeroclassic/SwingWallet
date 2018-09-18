@@ -125,7 +125,7 @@ public class DashboardPanel
 		JPanel tempPanel = new JPanel();
 		JLabel logoLabel = new JLabel(new ImageIcon(
 			this.getClass().getClassLoader().getResource("images/zero-small.png")));
-		JLabel zcLabel = new JLabel("ZeroClassic Currency Wallet");
+		JLabel zcLabel = new JLabel("ZeroClassic Wallet");
 		zcLabel.setIconTextGap(8);
 		zcLabel.setFont(new Font("Helvetica", Font.BOLD, 32));
 		tempPanel.setToolTipText("Powered by ZeroClassic");
