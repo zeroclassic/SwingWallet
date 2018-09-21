@@ -180,13 +180,13 @@ public class OSUtil
 		
 		if (os == OS_TYPE.MAC_OS)
 		{
-			return new File(System.getProperty("user.home") + "/Library/Application Support/Zero").getCanonicalPath();
+			return new File(System.getProperty("user.home") + "/Library/Application Support/zeroclassic").getCanonicalPath();
 		} else if (os == OS_TYPE.WINDOWS)
 		{
-			return new File(System.getenv("APPDATA") + "\\Zero").getCanonicalPath();
+			return new File(System.getenv("APPDATA") + "\\ZeroClassic").getCanonicalPath();
 		} else
 		{
-			return new File(System.getProperty("user.home") + "/.zero").getCanonicalPath();
+			return new File(System.getProperty("user.home") + "/.zeroclassic").getCanonicalPath();
 		}
 	}
 
@@ -272,11 +272,11 @@ public class OSUtil
 				"/usr/bin/", // Typical Ubuntu
 				"/bin/",
 				"/usr/local/bin/",
-				"/usr/local/zero/bin/",
-				"/usr/lib/zero/bin/",
+				"/usr/local/zeroclassic/bin/",
+				"/usr/lib/zeroclassic/bin/",
 				"/opt/local/bin/",
-				"/opt/local/zero/bin/",
-				"/opt/zero/bin/"
+				"/opt/local/zeroclassic/bin/",
+				"/opt/zeroclassic/bin/"
 			};
 	
 			for (String d : dirs)
