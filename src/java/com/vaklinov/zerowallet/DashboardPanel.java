@@ -371,7 +371,7 @@ public class DashboardPanel
 		}
 
 		// TODO: what if ZeroClassic directory is non-default...
-		File walletDAT = new File(OSUtil.getBlockchainDirectory() + "/wallet.dat");
+		File walletDAT = new File(OSUtil.getBlockchainDirectory() + "/wallet.zero");
 		
 		if (this.OSInfo == null)
 		{

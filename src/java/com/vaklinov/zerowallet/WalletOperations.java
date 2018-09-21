@@ -92,7 +92,7 @@ public class WalletOperations
 			{
 		        JOptionPane.showMessageDialog(
 		            this.parent,
-		            "The wallet.dat file being used is already encrypted. " +
+		            "The wallet.zero file being used is already encrypted. " +
 		            "This \noperation may be performed only on a wallet that " + 
 		            "is not\nyet encrypted!",
 		            "Wallet is already encrypted...",
