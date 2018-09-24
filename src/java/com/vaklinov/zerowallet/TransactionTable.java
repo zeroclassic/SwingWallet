@@ -129,7 +129,7 @@ public class TransactionTable
 						
 						Log.info("Transaction ID for block explorer is: " + txID);
 						Desktop.getDesktop().browse(
-							new URL("https://zeroexplorer.com/?tx=" + txID).toURI());
+							new URL("http://167.114.3.131:3001/tx/" + txID).toURI());
 					} catch (Exception ex)
 					{
 						Log.error("Unexpected error: ", ex);
