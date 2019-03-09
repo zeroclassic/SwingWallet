@@ -13,9 +13,10 @@ import com.vaklinov.zerowallet.OSUtil.OS_TYPE;
  */
 
 public class WalletPreferences {
-	public static final Integer mainnetRPCPortDefault = 23801;
-	public static final Integer testnetRPCPortDefault = 23802;
-	public static final String  commandLineToolsDirDefault = "/usr/local/bin/zero";
+	public static final Integer mainnetRPCPortDefault = 23901;
+	public static final Integer testnetRPCPortDefault = 23902;
+	// public static final String  commandLineToolsDirDefault = "/usr/local/bin/zero";
+	public static final String  commandLineToolsDirDefault = System.getProperty("user.dir");
 	
 	private JsonObject	preferences;
 	private Integer		mainnetRPCPort;
