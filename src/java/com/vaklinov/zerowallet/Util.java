@@ -94,6 +94,11 @@ public class Util
 		return false;
 	}
 	
+	public static boolean stringIsEmpty(String s)
+	{
+		return (s == null) || (s.length() <= 0);
+	}
+	
 	
 	// Turns a 1.0.7+ error message to a an old JSOn style message
 	// info - new style error message
