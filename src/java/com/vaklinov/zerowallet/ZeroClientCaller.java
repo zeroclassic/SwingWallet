@@ -801,68 +801,98 @@ public class ZeroClientCaller
 	
 	
 	// Imports a private key - tries both possibilities T/Z
-	public synchronized void importPrivateKey(String key)
+	public synchronized String importPrivateKey(String key)
 		throws WalletCallException, IOException, InterruptedException
 	{
-		// First try a Z key
-		String[] params = new String[] { this.zerocli.getCanonicalPath(), "z_importkey", wrapStringParameter(key) };
-		CommandExecutor caller = new CommandExecutor(params);
-    	String strResult = caller.execute();
+		String first_letter = key.substring(0, 1);
 		
-		if ((strResult == null) || (strResult.trim().length() <= 0))
-		{
-			return;
-		}
+		// T keys start with "L" or "K"
+		// Z keys start with "S" or "s"
 		
-		// Obviously we have an error trying to import a Z key
-		if (strResult.trim().toLowerCase(Locale.ROOT).startsWith("error:"))
+		if (first_letter.equals("S") || first_letter.equals("s"))
 		{
-   		 	 // Expecting an error of a T address key
-   		 	 String jsonPart = strResult.substring(strResult.indexOf("{"));
-  		     JsonValue response = null;
-  			 try
-  			 {
-  			   	response = Json.parse(jsonPart);
-  		 	 } catch (ParseException pe)
-  			 {
-  			   	 throw new WalletCallException(jsonPart + "\n" + pe.getMessage() + "\n", pe);
-  			 }
+			// Try a Z key
+			String[] params = new String[] 
+			{ 
+				this.zerocli.getCanonicalPath(),
+				"-rpcclienttimeout=5000",
+				"z_importkey", 
+				wrapStringParameter(key) 
+			};
+			CommandExecutor caller = new CommandExecutor(params);
+			String strResult = caller.execute();
+			
+			if (Util.stringIsEmpty(strResult) || 
+				(!strResult.trim().toLowerCase(Locale.ROOT).contains("error")))
+			{
+				return strResult == null ? "" : strResult.trim();
+			}
+			
+			// Obviously we have an error trying to import a Z key
+			if (strResult.trim().toLowerCase(Locale.ROOT).startsWith("error") &&
+				(strResult.indexOf("{") != -1))
+			{
+				 // Expecting an error of a T address key
+				 String jsonPart = strResult.substring(strResult.indexOf("{"));
+				 JsonValue response = null;
+				 try
+				 {
+					response = Json.parse(jsonPart);
+				 } catch (ParseException pe)
+				 {
+					 throw new WalletCallException(jsonPart + "\n" + pe.getMessage() + "\n", pe);
+				 }
 
-  			 JsonObject respObject = response.asObject();
-  			 if ((respObject.getDouble("code", +123) == -1) &&
-  				 (respObject.getString("message", "ERR").indexOf("wrong network type") != -1))
-  			 {
-  				 // Obviously T address - do nothing here
-  			 } else
-  			 {
-  	    		 throw new WalletCallException("Unexpected response from wallet: " + strResult);
-  			 }
-		} else if (strResult.trim().toLowerCase(Locale.ROOT).startsWith("error code:"))
-		{
- 			 JsonObject respObject = Util.getJsonErrorMessage(strResult);
- 			 if ((respObject.getDouble("code", +123) == -1) &&
- 				 (respObject.getString("message", "ERR").indexOf("wrong network type") != -1))
- 			 {
- 				 // Obviously T address - do nothing here
- 			 } else
- 			 {
- 	    		 throw new WalletCallException("Unexpected response from wallet: " + strResult);
- 			 }
-		} else
-		{
-			throw new WalletCallException("Unexpected response from wallet: " + strResult);
+				 JsonObject respObject = response.asObject();
+				 if ((respObject.getDouble("code", +123) == -1) &&
+					 (respObject.getString("message", "ERR").indexOf("wrong network type") != -1))
+				 {
+					 // Obviously T address - do nothing here
+				 } else
+				 {
+					 throw new WalletCallException("Unexpected response from wallet: " + strResult);
+				 }
+			} else if (strResult.trim().toLowerCase(Locale.ROOT).startsWith("error code:"))
+			{
+				 JsonObject respObject = Util.getJsonErrorMessage(strResult);
+				 if ((respObject.getDouble("code", +123) == -1) &&
+					 (respObject.getString("message", "ERR").indexOf("wrong network type") != -1))
+				 {
+					 // Obviously T address - do nothing here
+				 } else
+				 {
+					 throw new WalletCallException("Unexpected response from wallet: " + strResult);
+				 }
+			} else
+			{
+				throw new WalletCallException("Unexpected response from wallet: " + strResult);
+			}
 		}
-		
-		// Second try a T key
-		strResult = this.executeCommandAndGetSingleStringResponse("importprivkey", wrapStringParameter(key));
-		
-		if ((strResult == null) || (strResult.trim().length() <= 0))
+		else if (first_letter.equals("L") || first_letter.equals("K"))
 		{
-			return;
+			// try a T key
+			String strResult = this.executeCommandAndGetSingleStringResponse(
+				"-rpcclienttimeout=5000", "importprivkey", wrapStringParameter(key));
+			
+			// obsolete as new deamons on success returns recovered address, not empty string
+			/*
+			if (Util.stringIsEmpty(strResult) || 
+				(!strResult.trim().toLowerCase(Locale.ROOT).contains("error")))
+			{
+				return strResult == null ? "" : strResult.trim();
+			}
+			*/
+			if (!strResult.trim().toLowerCase(Locale.ROOT).contains("error"))
+			{
+				return strResult == null ? "" : strResult.trim();
+			}
+			else throw new WalletCallException("Unexpected response from wallet: " + strResult); // Obviously an error	
 		}
-		
-		// Obviously an error
-		throw new WalletCallException("Unexpected response from wallet: " + strResult);
+		else
+		{
+			throw new WalletCallException("Single private key should start with a 'L', 'K' or 'S' !!!");
+		}
+		throw new WalletCallException("Error while importing private key");
 	}
 	
 
