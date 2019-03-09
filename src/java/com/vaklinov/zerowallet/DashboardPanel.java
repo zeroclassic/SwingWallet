@@ -32,6 +32,7 @@ package com.vaklinov.zerowallet;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -51,6 +52,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -483,7 +485,8 @@ public class DashboardPanel
 		{
 			netColor = "green";
 		}		
-				
+		
+		/*		
 		String text =
 			"<html> " +
 		    "Blockchain synchronized: <span style=\"font-weight:bold\">" + 
@@ -493,6 +496,17 @@ public class DashboardPanel
 			"<span style=\"font-size:1px\"><br/></span>" + 
 			"Network: <span style=\"font-weight:bold\">" + info.numConnections + " connections</span>" +
 			"<span style=\"font-size:1.7em;color:" + netColor + "\">" + connections + "</span>";
+		*/
+		String text =
+			"<html> " +
+		    "Blockchain synchronized: <span style=\"font-weight:bold\">" + 
+			percentage + "% </span> " + tick + " <br/>" +
+			"Up to: <span style=\"font-size:0.8em;font-weight:bold\">" +
+			info.lastBlockDate.toLocaleString() + "</span>  <br/> " + 
+			"<span style=\"font-size:1px\"><br/></span>" + 
+			"Network: <span style=\"font-weight:bold\">" + info.numConnections + " connections</span>" +
+			"<span style=\"font-size:1.7em;color:" + netColor + "\">" + connections + "</span>";
+		
 		this.networkAndBlockchainLabel.setText(text);
 	}
 	
@@ -584,16 +598,34 @@ public class DashboardPanel
 	private JTable createTransactionsTable(String rowData[][])
 		throws WalletCallException, IOException, InterruptedException
 	{
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment( JLabel.RIGHT );
+		rightRenderer.setBackground(new Color(255, 255, 0, 32));
+
 		String columnNames[] = { "Type", "Direction", "Confirmed?", "Amount", "Date", "Destination Address"};
         JTable table = new TransactionTable(
         	rowData, columnNames, this.parentFrame, this.clientCaller); 
+        	
+        table.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );	
+        table.getColumnModel().getColumn(1).setCellRenderer( centerRenderer );
+        table.getColumnModel().getColumn(3).setCellRenderer( rightRenderer );
+        table.getColumnModel().getColumn(2).setCellRenderer( centerRenderer );
+        table.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );
+        table.getColumnModel().getColumn(5).setCellRenderer( centerRenderer );
+        
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+		headerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        	
         table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         table.getColumnModel().getColumn(0).setPreferredWidth(190);
-        table.getColumnModel().getColumn(1).setPreferredWidth(145);
-        table.getColumnModel().getColumn(2).setPreferredWidth(170);
-        table.getColumnModel().getColumn(3).setPreferredWidth(210);
-        table.getColumnModel().getColumn(4).setPreferredWidth(405);
-        table.getColumnModel().getColumn(5).setPreferredWidth(800);
+        table.getColumnModel().getColumn(1).setPreferredWidth(140);
+        table.getColumnModel().getColumn(2).setPreferredWidth(165);
+        table.getColumnModel().getColumn(3).setPreferredWidth(300);
+        table.getColumnModel().getColumn(4).setPreferredWidth(450);
+        table.getColumnModel().getColumn(5).setPreferredWidth(600);
 
         return table;
 	}
@@ -660,7 +692,8 @@ public class DashboardPanel
 			notConfirmed = " \u25B6";
 		}
 
-		DecimalFormat df = new DecimalFormat("########0.00######");
+		// DecimalFormat df = new DecimalFormat("########0.00######");
+		DecimalFormat df = new DecimalFormat("########0.00000000");
 		
 		// Change the direction and date etc. attributes for presentation purposes
 		for (String[] trans : allTransactions)
@@ -683,7 +716,7 @@ public class DashboardPanel
 			// Date
 			if (!trans[4].equals("N/A"))
 			{
-				trans[4] = DateFormat.getDateInstance().format(new Date(Long.valueOf(trans[4]).longValue() * 1000L));
+				trans[4] = new Date(Long.valueOf(trans[4]).longValue() * 1000L).toLocaleString();
 			}
 			
 			// Amount
