@@ -119,7 +119,7 @@ public class AddressesPanel
 				"* If the balance of an address is flagged as not confirmed, the address is currently taking " +
 				"part in a transaction. The shown balance then is the expected value it will have when " +
 				"the transaction is confirmed. " +
-				"The average confirmation time is 2.5 min." +
+				"The average confirmation time is 2 min." +
 			    "</span>");
 		warningPanel.add(warningL, BorderLayout.NORTH);
 		addressesPanel.add(warningPanel, BorderLayout.NORTH);
